@@ -9,17 +9,20 @@ const RestaruantCard = (props) =>{
         avgRating = "N/A",
         cuisines = [],
         costForTwo = "N/A",
-        deliveryTime = "N/A"
+        sla = "N/A"
     } = resData;
 
     return (
-        <div className="res-card">
-            <img className="res-logo" alt="res-logo" src={CDN_URL+cloudinaryImageId}/>
-            <h3>{name}</h3>
-            <h4>{cuisines.join(", ")}</h4>
-            <h4>{avgRating}</h4>
-            <h4>{costForTwo}</h4>
-            <h4>{deliveryTime} minutes</h4>
+        <div className="m-4 p-4 w-[300px] hover:scale-95 delay-150 duration-300 ease-in-out ">
+            <div className="relative">
+                <img className="h-[180px] w-full rounded-2xl shadow-md" alt="res-logo" src={CDN_URL+cloudinaryImageId}/>
+                <div className="absolute bottom-0 left-5">
+                    <span className="text-white text-2xl font-bold">{costForTwo}</span>
+                </div>
+            </div>
+            <h3 className="font-bold pt-4 text-lg truncate">{name}</h3>
+            <h4>🌟 {avgRating} ⌛ {sla.slaString}</h4>
+            <h4 className="truncate">{cuisines.join(", ")}</h4>
         </div>
     )
 };

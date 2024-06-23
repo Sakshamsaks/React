@@ -1,9 +1,9 @@
 import RestaurantCard from "./RestaurantCard";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
-import { useInView } from "react-intersection-observer";
+import UserContext from "../utils/UserContext";
 
 const Body = () => {
     const [ListOfRestaurants, setListOfRestaurants] = useState([]);
@@ -12,18 +12,13 @@ const Body = () => {
 
     const [searchText, setSearchText]= useState("");
 
-    const [page, setPage] = useState(1);
-    const [loadingMore, setLoadingMore] = useState(false);
-    const { ref, inView } = useInView({
-        threshold: 0.5,
-    });
+
 
     useEffect(() => {
-        fetchData(page);
-    }, [page]);
+        fetchData();
+    }, []);
 
-    const fetchData = async (page) => {
-        setLoadingMore(true);
+    const fetchData = async () => {
         const data = await fetch(
             "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9352403&lng=77.624532&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
         );
@@ -33,18 +28,11 @@ const Body = () => {
         const restaurants = json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
         const topRestaurants=json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
         
-        setListOfRestaurants((prev) => [...prev, ...restaurants]);
-        setFilteredRestaurant((prev) => [...prev, ...restaurants]);
+        setListOfRestaurants(restaurants);
+        setFilteredRestaurant(restaurants);
         setListOfTopRestaurants(topRestaurants);
 
-        setLoadingMore(false);
     };
-
-    useEffect(() => {
-        if (inView && !loadingMore) {
-            setPage((prevPage) => prevPage + 1);
-        }
-    }, [inView,loadingMore]);
 
     const onlineStatus=useOnlineStatus();
 
@@ -53,6 +41,8 @@ const Body = () => {
             <h1>Looks you are offline!!!</h1>
         );
     }
+
+    const {loggedInUser, setUserName} =useContext(UserContext);
 
     return ListOfRestaurants.length === 0 ? <Shimmer /> : (
         <div className="body px-40 z-0">
@@ -70,7 +60,7 @@ const Body = () => {
 
                     }}>Search</button>
                 </div>
-                <div className="m-4 p-8 ">
+                <div className="search m-4 p-4 flex items-center ">
                     <button className="px-4 py-2 bg-blue-100 rounded-lg hover:scale-95"
                         onClick={() => {
                             const filteredList = ListOfRestaurants.filter(res => res.info.avgRating > 4);
@@ -78,6 +68,14 @@ const Body = () => {
                         }}>
                         Top Rated restaurant
                     </button>
+                </div>
+                <div className="search p-4 m-4 flex items-center">
+                    <label>UserName : </label>
+                    <input 
+                        className="border border-black p-2" 
+                        value={loggedInUser}
+                        onChange={(e)=>setUserName(e.target.value)}
+                    />
                 </div>
             </div>
 
@@ -97,11 +95,6 @@ const Body = () => {
                         <Link key={restaurant.info.id} to={"/restaurants/"+restaurant.info.id}><RestaurantCard resData={restaurant.info} /></Link>)
                 }
             </div>
-
-            <div ref={ref} className="h-8 flex justify-center items-center">
-                {loadingMore ? <Shimmer /> : inView && <div>Loading more items...</div>}
-            </div>
-            
         </div>
     );
 };

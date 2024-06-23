@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import UserContext from "../utils/UserContext";
 import { CDN_URL } from "../utils/contants";
 
 const RestaruantCard = (props) =>{
@@ -23,6 +25,7 @@ const RestaruantCard = (props) =>{
             <h3 className="font-bold pt-4 text-lg truncate">{name}</h3>
             <h4>🌟 {avgRating} ⌛ {sla.slaString}</h4>
             <h4 className="truncate">{cuisines.join(", ")}</h4>
+            
         </div>
     )
 };

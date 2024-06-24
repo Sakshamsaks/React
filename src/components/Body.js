@@ -48,7 +48,10 @@ const Body = () => {
         <div className="body px-40 z-0">
             <div className="filter flex flex-items-center">
                 <div className="search m-4 p-4 ">
-                    <input type="text" value={searchText} 
+                    <input 
+                        type="text" 
+                        value={searchText}
+                        data-testid="searchInput"
                         onChange={(e)=>{
                             setSearchText(e.target.value);
                     }} placeholder="Search for Restaurant.." />

@@ -15,7 +15,7 @@ const RestaruantCard = (props) =>{
     } = resData;
 
     return (
-        <div className="m-4 p-4 w-[300px] hover:scale-95 delay-150 duration-300 ease-in-out ">
+        <div data-testid="resCard" className="m-4 p-4 w-[300px] hover:scale-95 delay-150 duration-300 ease-in-out ">
             <div className="relative">
                 <img className="h-[180px] w-full rounded-2xl shadow-md" alt="res-logo" src={CDN_URL+cloudinaryImageId}/>
                 <div className="absolute bottom-0 left-5">
